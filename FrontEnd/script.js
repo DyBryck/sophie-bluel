@@ -349,8 +349,8 @@ const sendWork = (e) => {
   const title = document.getElementById("title");
   const category = document.getElementById("category");
 
-  if (image.files[0] === "" || title.value === "") {
-    alert("Veuillez renseigner tous les champs");
+  if (!image.files[0] || !title.value) {
+    return alert("Veuillez renseigner tous les champs");
   }
 
   const body = new FormData();
@@ -364,9 +364,13 @@ const sendWork = (e) => {
       Authorization: "Bearer " + token,
     },
     body: body,
-  }).then(async () => {
-    generateSecondContentModale();
-    await getWorks();
+  }).then(async (res) => {
+    if (res.ok) {
+      generateSecondContentModale();
+      await getWorks();
+    } else {
+      alert("Une erreur s'est produite");
+    }
   });
 };
 
