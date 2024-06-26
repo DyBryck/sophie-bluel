@@ -16,17 +16,20 @@
   <body>
     <header>
       <div class="header-content">
-        <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+        <a href="index.html"
+          ><h1>Sophie Bluel <span>Architecte d'intérieur</span></h1></a
+        >
         <nav>
           <ul>
-            <li>projets</li>
-            <li>contact</li>
+            <li><a href="#portfolio">projets</a></li>
+            <li><a href="#contact">contact</a></li>
             <li class="authButton"><a href="./login.html">login</a></li>
             <li><img src="./assets/icons/instagram.png" alt="Instagram" /></li>
           </ul>
         </nav>
       </div>
     </header>
+    <main>
       <div class="modale-container"></div>
       <section id="introduction">
         <figure>
@@ -63,16 +66,15 @@
         <p>Vous avez un projet ? Discutons-en !</p>
         <form action="#" method="post">
           <label for="name">Nom</label>
-          <input type="text" name="name" id="name" />
+          <input type="text" name="name" autocomplete="name" id="name" />
           <label for="email">Email</label>
-          <input type="email" name="email" id="email" />
+          <input type="email" name="email" autocomplete="email" id="email" />
           <label for="message">Message</label>
           <textarea name="message" id="message" cols="30" rows="10"></textarea>
           <input type="submit" value="Envoyer" />
         </form>
       </section>
     </main>
-
     <footer>
       <nav>
         <ul>

@@ -1,11 +1,10 @@
 let token = localStorage.getItem("token");
 
-let worksList = [];
+// Initialisation des tableaux qui contiendront la liste des catégories et des travaux
 let categoriesList = [];
+let worksList = [];
 
-const modaleContainer = document.querySelector(".modale-container");
-
-// Récupération des catégories à l'API (1: objets, 2: appartements, 3: hôtels & restaurants)
+// Récupération des catégories depuis l'API
 const getCategories = () => {
   fetch("http://localhost:5678/api/categories")
     .then((res) => {
@@ -23,7 +22,7 @@ const getCategories = () => {
     });
 };
 
-// Récupération des travaux à l'API via leur ID
+// Récupération des travaux depuis l'API
 const getWorks = async () => {
   await fetch("http://localhost:5678/api/works")
     .then((res) => {
@@ -39,24 +38,34 @@ const getWorks = async () => {
     });
 };
 
+getCategories();
+getWorks();
+
 // Génération des boutons de filtre pour chaque catégorie de travail
 const generateFiltersButtons = (categories) => {
+  // Récupération du conteneur qui contiendra les boutons
   const filters = document.querySelector(".filters");
+  // Ajout de la catégorie "Tous" avec un id 0
   categories.push({ id: 0, name: "Tous" });
+  // Tri dans l'ordre croissant des ID
   categories.sort((a, b) => a.id - b.id);
+  // Boucle qui agit sur chaque élément du tableau contenant les catégories
   for (let i = 0; i < categories.length; i++) {
+    // Création d'un bouton au nom de la catégorie, avec ses classes et son event listener
     const button = document.createElement("button");
     button.innerText = categories[i].name;
     button.className = "buttons filter-button";
+    // Au clic, le bouton appelle la fonction qui génère les travaux selon l'id correspondant
     button.addEventListener("click", () => generateWorksList(categories[i].id));
     filters.appendChild(button);
   }
 };
 
-// Génération de la liste des travaux
+// Génération de la liste des travaux en fonction de l'id du bouton de filtre
 const generateWorksList = (categoryId) => {
-  let works = [];
+  // Récupération des boutons de filtre par leur classe
   const filterButton = document.getElementsByClassName("buttons");
+  // Gestion de la couleur de fond du bouton de filtre actif
   for (let i = 0; i < filterButton.length; i++) {
     if (i === categoryId) {
       filterButton[i].className = "buttons filter-button-active";
@@ -64,15 +73,19 @@ const generateWorksList = (categoryId) => {
       filterButton[i].className = "buttons filter-button";
     }
   }
-  if (parseInt(categoryId) === 0) {
+  // Initialisation d'un nouveau tableau qui contiendra la liste des travaux pour éviter tout conflit
+  let works = [];
+  // Affichage de tous les travaux (id 0)
+  if (categoryId === 0) {
     works = worksList;
   } else {
-    works = worksList.filter(function (work) {
-      return work.categoryId === parseInt(categoryId);
-    });
+    works = worksList.filter((work) => work.categoryId === categoryId);
   }
+  // Récupération du conteneur qui contiendra les travaux
   const gallery = document.querySelector(".gallery");
+  // Vidage du conteneur pour n'avoir aucune duplication
   gallery.innerHTML = "";
+  // Boucle qui génère chaque travail pour chaque élément du tableau contenant les travaux
   for (let i = 0; i < works.length; i++) {
     const figure = document.createElement("figure");
     const img = document.createElement("img");
@@ -86,10 +99,7 @@ const generateWorksList = (categoryId) => {
   }
 };
 
-getCategories();
-getWorks();
-
-// Fonction qui génère la barre noire quand l'utilisateur est connecté
+// Fonction qui génère la barre noire lorsque l'utilisateur est connecté
 const generateTopBar = () => {
   const header = document.querySelector("header");
   const topBar = document.createElement("div");
@@ -114,6 +124,7 @@ const generateEditButton = () => {
   editContainer.appendChild(editButton);
 };
 
+const modaleContainer = document.querySelector(".modale-container");
 // Fonction qui génère la modale
 const generateModale = () => {
   const modale = document.createElement("div");
@@ -154,6 +165,7 @@ document.addEventListener("click", (event) => {
   }
 });
 
+// Fonction qui génère la première fenêtre de la modale
 const generateFirstContentModale = () => {
   const modaleContent = document.querySelector(".modale-content");
   modaleContent.innerText = "";
@@ -202,6 +214,7 @@ const generateFirstContentModale = () => {
   modaleContent.appendChild(addPicture);
 };
 
+// Fonction qui génère le contenu pour l'ajout d'un travail
 const generateInputAddPhoto = () => {
   const modaleContent = document.querySelector(".modale-content");
   const formAddPhoto = document.createElement("form");
@@ -285,6 +298,7 @@ const generateInputAddPhoto = () => {
   formAddPhoto.appendChild(addPicture);
 };
 
+// Fonction qui affiche la photo téléchargée
 const afficherPhoto = () => {
   const input = document.getElementById("add-input");
   const title = document.getElementById("title");
@@ -316,6 +330,7 @@ const afficherPhoto = () => {
   }
 };
 
+// Fonction qui vérifie si chaque input est bien remplit
 const checkFormValue = () => {
   const input = document.getElementById("add-input");
   if (input.files && input.files[0]) {
@@ -324,6 +339,7 @@ const checkFormValue = () => {
   }
 };
 
+// Fonction qui génère la deuxième fenêtre de la modale
 const generateSecondContentModale = () => {
   const modaleContent = document.querySelector(".modale-content");
   modaleContent.innerText = "";
@@ -343,12 +359,16 @@ const generateSecondContentModale = () => {
   generateInputAddPhoto();
 };
 
+// Fonction qui envoie un travail
 const sendWork = (e) => {
   e.preventDefault();
+
+  // Récupération des éléments du formulaire
   const image = document.getElementById("add-input");
   const title = document.getElementById("title");
   const category = document.getElementById("category");
 
+  // Alerte l'utilisateur si un champ est vide
   if (!image.files[0] || !title.value) {
     return alert("Veuillez renseigner tous les champs");
   }
@@ -374,6 +394,7 @@ const sendWork = (e) => {
   });
 };
 
+// Fonction qui supprime un travail
 const deleteWork = async (id) => {
   fetch(`http://localhost:5678/api/works/${id}`, {
     method: "DELETE",
