@@ -73,7 +73,7 @@ const generateWorksList = (categoryId) => {
       filterButton[i].className = "buttons filter-button";
     }
   }
-  // Initialisation d'un nouveau tableau qui contiendra la liste des travaux pour éviter tout conflit
+  // Initialisation d'un nouveau tableau qui contiendra la liste des travaux pour éviter tout conflit avec le tableau original
   let works = [];
   // Affichage de tous les travaux (id 0)
   if (categoryId === 0) {
@@ -96,6 +96,7 @@ const generateWorksList = (categoryId) => {
     figure.appendChild(img);
     figure.appendChild(figcaption);
     gallery.appendChild(figure);
+    figure.id = "work " + works[i].id;
   }
 };
 
@@ -387,7 +388,28 @@ const sendWork = (e) => {
   }).then(async (res) => {
     if (res.ok) {
       generateSecondContentModale();
-      await getWorks();
+
+      const data = await res.json();
+      const id = data.id;
+      const imageUrl = data.imageUrl;
+      const workTitle = data.title;
+
+      worksList.push(data);
+
+      const gallery = document.querySelector(".gallery");
+
+      const figure = document.createElement("figure");
+      figure.id = "work " + id;
+
+      const workImage = document.createElement("img");
+      workImage.src = imageUrl;
+
+      const workFigcaption = document.createElement("figcaption");
+      workFigcaption.innerText = workTitle;
+
+      gallery.appendChild(figure);
+      figure.appendChild(workImage);
+      figure.appendChild(workFigcaption);
     } else {
       alert("Une erreur s'est produite");
     }
@@ -401,9 +423,23 @@ const deleteWork = async (id) => {
     headers: {
       Authorization: "Bearer " + token,
     },
-  }).then(async () => {
-    await getWorks();
-    generateFirstContentModale();
+  }).then((res) => {
+    if (res.ok) {
+      // Supprime l'élément de worksList
+      worksList = worksList.filter((work) => work.id !== parseInt(id));
+
+      // Regénère la première fenêtre de la modale
+      generateFirstContentModale();
+
+      // Mise à jour de la galerie principale
+      const gallery = document.querySelector(".gallery");
+      const figureChild = document.getElementById("work " + id);
+      if (figureChild) {
+        gallery.removeChild(figureChild);
+      }
+    } else {
+      alert("Une erreur s'est produite lors de la suppression");
+    }
   });
 };
 
