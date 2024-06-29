@@ -50,15 +50,13 @@ const generateFiltersButtons = (categories) => {
   // Tri dans l'ordre croissant des ID
   categories.sort((a, b) => a.id - b.id);
   // Boucle qui agit sur chaque élément du tableau contenant les catégories
-  for (let i = 0; i < categories.length; i++) {
-    // Création d'un bouton au nom de la catégorie, avec ses classes et son event listener
+  categories.forEach((categorie) => {
     const button = document.createElement("button");
-    button.innerText = categories[i].name;
+    button.innerText = categorie.name;
     button.className = "buttons filter-button";
-    // Au clic, le bouton appelle la fonction qui génère les travaux selon l'id correspondant
-    button.addEventListener("click", () => generateWorksList(categories[i].id));
+    button.addEventListener("click", () => generateWorksList(categorie.id));
     filters.appendChild(button);
-  }
+  });
 };
 
 // Génération de la liste des travaux en fonction de l'id du bouton de filtre
