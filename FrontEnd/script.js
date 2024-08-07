@@ -1,8 +1,26 @@
+const gallery = document.querySelector(".gallery");
+
 let token = localStorage.getItem("token");
 
 // Initialisation des tableaux qui contiendront la liste des catégories et des travaux
-let categoriesList = [];
 let worksList = [];
+let categoriesList = [];
+
+// Récupération des travaux depuis l'API
+const getWorks = () => {
+  fetch("http://localhost:5678/api/works")
+    .then((res) => {
+      if (res.ok) {
+        return res.json();
+      } else {
+        return alert("Une erreur s'est produite lors de la récupération");
+      }
+    })
+    .then((data) => {
+      worksList = data;
+      generateWorksList(0);
+    });
+};
 
 // Récupération des catégories depuis l'API
 const getCategories = () => {
@@ -19,22 +37,6 @@ const getCategories = () => {
       if (!token) {
         generateFiltersButtons(data);
       }
-    });
-};
-
-// Récupération des travaux depuis l'API
-const getWorks = async () => {
-  await fetch("http://localhost:5678/api/works")
-    .then((res) => {
-      if (res.ok) {
-        return res.json();
-      } else {
-        return alert("Une erreur s'est produite lors de la récupération");
-      }
-    })
-    .then((data) => {
-      worksList = data;
-      generateWorksList(0);
     });
 };
 
@@ -80,7 +82,7 @@ const generateWorksList = (categoryId) => {
     works = worksList.filter((work) => work.categoryId === categoryId);
   }
   // Récupération du conteneur qui contiendra les travaux
-  const gallery = document.querySelector(".gallery");
+  // const gallery = document.querySelector(".gallery");
   // Vidage du conteneur pour n'avoir aucune duplication
   gallery.innerHTML = "";
   // Boucle qui génère chaque travail pour chaque élément du tableau contenant les travaux
@@ -394,7 +396,7 @@ const sendWork = (e) => {
 
       worksList.push(data);
 
-      const gallery = document.querySelector(".gallery");
+      // const gallery = document.querySelector(".gallery");
 
       const figure = document.createElement("figure");
       figure.id = "work " + id;
@@ -430,7 +432,7 @@ const deleteWork = async (id) => {
       generateFirstContentModale();
 
       // Mise à jour de la galerie principale
-      const gallery = document.querySelector(".gallery");
+      // const gallery = document.querySelector(".gallery");
       const figureChild = document.getElementById("work " + id);
       if (figureChild) {
         gallery.removeChild(figureChild);
