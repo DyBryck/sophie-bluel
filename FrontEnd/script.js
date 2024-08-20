@@ -396,8 +396,6 @@ const sendWork = (e) => {
 
       worksList.push(data);
 
-      // const gallery = document.querySelector(".gallery");
-
       const figure = document.createElement("figure");
       figure.id = "work " + id;
 
