@@ -81,8 +81,6 @@ const generateWorksList = (categoryId) => {
   } else {
     works = worksList.filter((work) => work.categoryId === categoryId);
   }
-  // Récupération du conteneur qui contiendra les travaux
-  // const gallery = document.querySelector(".gallery");
   // Vidage du conteneur pour n'avoir aucune duplication
   gallery.innerHTML = "";
   // Boucle qui génère chaque travail pour chaque élément du tableau contenant les travaux
@@ -135,10 +133,12 @@ const generateModale = () => {
   modale.appendChild(modaleContent);
   modaleContainer.appendChild(modale);
   generateFirstContentModale();
+  document.body.classList.add("no-scroll");
 };
 
 // Fonction qui ferme la modale
 const closeModale = () => {
+  document.body.classList.remove("no-scroll");
   modaleContainer.innerHTML = "";
 };
 
@@ -185,14 +185,14 @@ const generateFirstContentModale = () => {
 
   const modaleWorksContainer = document.createElement("div");
   modaleWorksContainer.className = "modale-works-container";
-  for (let i = 0; i < worksList.length; i++) {
+  worksList.forEach((work) => {
     const workDiv = document.createElement("div");
     workDiv.className = "work-image-container";
-    workDiv.id = worksList[i].id;
+    workDiv.id = work.id;
     modaleWorksContainer.appendChild(workDiv);
 
     const workImage = document.createElement("img");
-    workImage.src = worksList[i].imageUrl;
+    workImage.src = work.imageUrl;
     workImage.className = "work-image-modale";
     workDiv.appendChild(workImage);
 
@@ -202,7 +202,7 @@ const generateFirstContentModale = () => {
     const trash = document.createElement("img");
     trash.src = "./assets/icons/trash-can-solid.svg";
     trash.className = "trash-icon";
-    trash.id = worksList[i].id;
+    trash.id = work.id;
 
     workDiv.appendChild(trashDiv);
     trashDiv.appendChild(trash);
@@ -210,7 +210,7 @@ const generateFirstContentModale = () => {
     trash.addEventListener("click", () => {
       deleteWork(trash.id);
     });
-  }
+  });
   modaleContent.appendChild(modaleWorksContainer);
   modaleContent.appendChild(addPicture);
 };

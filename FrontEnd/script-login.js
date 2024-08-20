@@ -29,20 +29,18 @@ document.querySelector("form").addEventListener("submit", (event) => {
     // Transformation en chaîne de caractères de l'objet qui contient les données de l'utilisateur
     body: JSON.stringify(userLogs),
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Erreur lors de la connexion : " + response.statusText);
-      }
+    .then((res) => {
+      if (!res.ok) throw new Error("Réponse de la promesse: " + res.statusText);
       // Conversion de la promesse en json
-      return response.json();
+      return res.json();
     })
+
     // Récupération des données du fichier json
     .then((data) => {
       // Récupération du token
       const token = data.token;
-      if (!token) {
-        throw new Error("Token manquant dans la réponse");
-      }
+      if (!token) throw new Error("Token manquant dans la réponse");
+
       // Stockage du token
       localStorage.setItem("token", token);
 
@@ -50,7 +48,7 @@ document.querySelector("form").addEventListener("submit", (event) => {
       window.location.href = "./index.html";
     })
     .catch((error) => {
-      console.error("Erreur lors de la tentative de connexion :", error);
+      console.error(error);
       alert("Une erreur s'est produite lors de la tentative de connexion.");
     });
 });
